@@ -1,0 +1,60 @@
+html, body {
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+  background-color: #333333;
+  color: white;
+  font-family: 'Bai Jamjuree', sans-serif;
+  font-weight: 400; }
+  html select, body select {
+    font-size: 14px !important;
+    font-weight: 400;
+    font-family: 'Kanit', sans-serif; }
+
+.wrapper-main {
+  margin-top: 2.5rem;
+  width: 62%; }
+  .wrapper-main p {
+    font-weight: 700; }
+    .wrapper-main p.title {
+      font-size: 28px; }
+  .wrapper-main label, .wrapper-main ul {
+    font-size: 14px; }
+  .wrapper-main .graph {
+    display: flex;
+    margin-top: 20px; }
+    .wrapper-main .graph-y {
+      flex: 1 1 5%; }
+      .wrapper-main .graph-y p {
+        margin: 12px 10px;
+        font-size: 12px;
+        font-weight: 400; }
+    .wrapper-main .graph-x {
+      flex: 1 1 95%;
+      width: 100%; }
+      .wrapper-main .graph-x .minmax {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        top: -15px; }
+        .wrapper-main .graph-x .minmax label {
+          font-size: 12px; }
+      .wrapper-main .graph-x .wrapper {
+        width: 100%;
+        border-left: 2px solid white;
+        border-right: 2px solid white; }
+        .wrapper-main .graph-x .wrapper .chart {
+          width: 100%; }
+          .wrapper-main .graph-x .wrapper .chart-bar {
+            height: 20px;
+            max-width: 100% !important;
+            margin: 10px 0;
+            background-color: #ED2E7C;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; }
+            .wrapper-main .graph-x .wrapper .chart-bar label {
+              font-size: 12px;
+              padding: 0 10px; }
