@@ -22,11 +22,11 @@ html, body {
     font-size: 14px; }
   .wrapper-main .graph {
     display: flex;
-    margin-top: 20px; }
+    margin-top: 40px; }
     .wrapper-main .graph-y {
       flex: 1 1 5%; }
       .wrapper-main .graph-y p {
-        margin: 12px 10px;
+        margin: 12.25px 10px;
         font-size: 12px;
         font-weight: 400; }
     .wrapper-main .graph-x {
@@ -38,15 +38,17 @@ html, body {
         align-items: center;
         position: absolute;
         width: 100%;
-        top: -15px; }
+        top: -30px; }
         .wrapper-main .graph-x .minmax label {
           font-size: 12px; }
       .wrapper-main .graph-x .wrapper {
         width: 100%;
         border-left: 2px solid white;
-        border-right: 2px solid white; }
+        border-right: 2px solid white;
+        display: flex; }
         .wrapper-main .graph-x .wrapper .chart {
-          width: 100%; }
+          width: 100%;
+          flex: 1 1 70%; }
           .wrapper-main .graph-x .wrapper .chart-bar {
             height: 20px;
             max-width: 100% !important;
@@ -58,3 +60,12 @@ html, body {
             .wrapper-main .graph-x .wrapper .chart-bar label {
               font-size: 12px;
               padding: 0 10px; }
+            .wrapper-main .graph-x .wrapper .chart-bar-right {
+              position: absolute;
+              right: 0; }
+          .wrapper-main .graph-x .wrapper .chart-negative {
+            width: 100%;
+            flex: 1 1 30%;
+            padding-top: 5px; }
+            .wrapper-main .graph-x .wrapper .chart-negative .chart-bar {
+              margin: 5px 0; }

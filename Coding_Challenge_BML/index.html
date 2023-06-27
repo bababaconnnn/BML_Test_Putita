@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
-    <title>DocBangkok Population Growth</title>
+    <title>Bangkok Population Growth</title>
 </head>
 <body>
     <div class="wrapper-main container">
@@ -58,6 +58,7 @@
                     <label id="max"></label>
                 </div>
                 <div class="wrapper">
+                    <div class="chart-negative" id="chart-negative"></div>
                     <div class="chart" id="chart"></div>
                 </div>
                 
@@ -76,59 +77,109 @@
 </html>
 
 <script>
+    var data;
     $('#select-khet').change(function(){
-        $.ajax({
-            type: "GET",  
-            url: "assets/bkk_population_growth.csv",
-            dataType: "text",       
-            success: function(response)  
-            {
-                data = $.csv.toArrays(response);
-                for(let i=0;i<data.length;i++){
-                    var khet = $('#select-khet').val();
-                    if(data[i][1] == khet){
-                        let count = 2;
-                        var value = [];
-                        for(let j=0;j<10;j++){
-                            console.log(data[i][count]);
-                            value.push(parseFloat(data[i][count].slice(0, -1)));
-                            count++;
-                        }
-                        getChart(value);
-                    }
+        $('#chart').empty();
+        $('#chart-negative').empty();
+       
+        for(let i=0;i<data.length;i++){
+            var khet = $('#select-khet').val();
+            if(data[i][1] == khet){
+                let count = 2;
+                var value = [];
+                for(let j=0;j<10;j++){
+                    // console.log(data[i][count]);
+                    value.push(parseFloat(data[i][count].slice(0, -1)));
+                    count++;
                 }
-                console.log(data);
-            }   
-        });
+                getChart(value);
+            }
+        }
     });
     function getChart(value) {
-            var chartDiv = document.getElementById('chart');
-            let min = value[0];
-            let max = value[0];
-            
-            for(let i=0;i<value.length;i++){
-                if(value[i]>max){
-                    max = value[i];
-                }
-                else {
-                    min = value[i];
-                }
-            }
-            $('#min').text(min+"%");
-            $('#max').text(max+"%");
-            $('#chart').empty();
-            for(let i=0;i<value.length;i++){
-                let chart_size = (value[i]/max)*100;
-                console.log(chart_size);
-                // $('#chart').append('<div class="d-flex align-items-center gap-3"><div class="chart-bar" style="width: '+chart_size+'%"></div><label>'+value[i]+'%</label></div>');
-                $('#chart').append('<div class="chart-bar" style="width: '+chart_size+'%;"><label>'+value[i]+'%</label></div>');
-            }
-            console.log(max,min)
-        }
-    $(document).ready(function () {
-        var data;
+        let min = value[0];
+        let max = value[0];
+        let val1 = [];
+        let val2 = [];
+        let max_negative = 0;
+        var is_positive = false,is_negative = false;
         
-        // $('#select-khet').append('<option selected>เขต</option>');
+        for(let i=0;i<value.length;i++){
+            console.log(value[i]);
+            if(value[i]>max){
+                max = value[i];
+            }
+            else if(value[i]<min) {
+                min = value[i];
+            }
+
+            if(value[i]>=0){
+                is_positive = true;
+                val1.push(value[i]);
+                val2.push(0);
+            }
+            else {
+                is_negative = true;
+                if((value[i] * -1)>max_negative){
+                    max_negative = value[i] * -1;
+                }
+                val2.push((value[i] * -1));
+                val1.push(0);
+            }
+        }
+        console.log(val1);
+        console.log(val2);
+        $('#min').text(min+"%");
+        $('#max').text(max+"%");
+        $('#chart').empty();
+        if(is_positive == true && is_negative == true){
+            $("#chart").css("flex","1 1 70%");
+            $("#chart-negative").css("flex","1 1 30%");
+        }
+        else {
+            if(is_positive == true){
+                $("#chart").css("flex","1 1 100%");
+                $(".chart-negative").css("flex","0");
+            }
+            if(is_negative == true){
+                $("#chart-negative").css("flex","1 1 100%");
+                $(".chart").css("flex","0");
+            }
+        }
+        
+        for(let i=0;i<val1.length;i++){
+            let chart_size = (val1[i]/max)*100;
+            console.log(chart_size);
+            // $('#chart').append('<div class="d-flex align-items-center gap-3"><div class="chart-bar" style="width: '+chart_size+'%"></div><label>'+value[i]+'%</label></div>');
+            if(val1[i] != 0){
+                $('#chart').append('<div class="chart-bar" style="width: '+chart_size+'%;"><label>'+val1[i]+'%</label></div>');
+            }
+            else {
+                $('#chart').append('<div class="chart-bar" style="width: 100%; background-color: #333333;"></div>');
+            }
+            
+        }
+        // let max_negative = val2[0];
+        // for(let i=0;i<val2.length;i++){
+        //     if(val2[i]>max_negative){
+        //         max_negative = val2[i];
+        //     }
+        // }
+        for(let i=0;i<val2.length;i++){
+            let chart_size = (val2[i]/max_negative)*100;
+            console.log(chart_size);
+            // $('#chart').append('<div class="d-flex align-items-center gap-3"><div class="chart-bar" style="width: '+chart_size+'%"></div><label>'+value[i]+'%</label></div>');
+            if(val2[i] != 0){
+                $('#chart-negative').append('<div class="chart-bar" style="width: '+chart_size+'%;float: right;clear: right;"><label>-'+val2[i]+'%</label></div>');
+            }
+            else {
+                $('#chart-negative').append('<div class="chart-bar" style="width: 100%; background-color: #333333;float: right;clear: right;"></div>');
+            }
+           
+        }
+        console.log(max,min)
+    }
+    function getData() {
         $.ajax({
             type: "GET",  
             url: "assets/bkk_population_growth.csv",
@@ -136,31 +187,36 @@
             success: function(response)  
             {
                 data = $.csv.toArrays(response);
-                for(let i=0;i<data.length;i++){
-                    console.log(data[i][1]);
-                    if(i!=0){
-                        $('#select-khet').append('<option>'+data[i][1]+'</option>');
-                    }
-                    else {
-                        for(let i=2;i<12;i++){
-                            $('.graph-y').append('<p>'+data[0][i]+'</p>');
-                        }
-                    }
-                    var khet = $('#select-khet').val();
-                    if(data[i][1] == khet){
-                        let count = 2;
-                        var value = [];
-                        for(let j=0;j<10;j++){
-                            console.log(data[i][count]);
-                            value.push(parseFloat(data[i][count].slice(0, -1)));
-                            count++;
-                        }
-                        getChart(value);
-                    }
-                }
-                console.log(data);
+                firstChart();
             }   
         });
-        
+    }
+    function firstChart() {
+        for(let i=0;i<data.length;i++){
+            // console.log(data[i][1]);
+            if(i!=0){
+                $('#select-khet').append('<option>'+data[i][1]+'</option>');
+            }
+            else {
+                for(let i=2;i<12;i++){
+                    $('.graph-y').append('<p>'+data[0][i]+'</p>');
+                }
+            }
+            var khet = $('#select-khet').val();
+            if(data[i][1] == khet){
+                let count = 2;
+                var value = [];
+                for(let j=0;j<10;j++){
+                    // console.log(data[i][count]);
+                    value.push(parseFloat(data[i][count].slice(0, -1)));
+                    count++;
+                }
+                getChart(value);
+            }
+        }
+    }
+    $(document).ready(function () {
+        getData();
+        // console.log(data); 
     });
 </script>
